@@ -1,0 +1,20 @@
+## OSX artifacts
+.DS_Store
+
+## Dear ImGui artifacts
+imgui.ini
+
+## General build artifacts
+*.o
+*.obj
+*.exe
+*.dll
+*.pdb
+examples/build/*
+examples/*/Debug/*
+examples/*/Release/*
+examples/*/x64/*
+
+## Editor files
+compile_commands.json
+*.bak
