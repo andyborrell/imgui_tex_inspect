@@ -19,7 +19,7 @@ Screenshot
 Demo
 =====
 
-The ```examples``` directory contains example projects for the supported platforms. 
+The ```examples``` directory contains example projects for the supported platforms.  Note that the example projects expect the `imgui` directory to be in the same parent directory as `imgui_tex_inspect`.
 
 [You can also see a WebGL build of the demo project here](https://andyborrell.github.io/imgui_tex_inspect)
 
