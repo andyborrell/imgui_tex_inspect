@@ -138,6 +138,15 @@ void ImplDX11_Shutdown()
     GImplData.pd3dDevice = NULL;
 }
 
+void GiveNotInitializedWarning()
+{
+    static bool warningGiven = false;
+    if (!warningGiven)
+    {
+        fprintf(stderr, "ERROR: ImGuiTexInspect backend not initialized\n");
+        warningGiven = true;
+    }
+}
 
 struct DX11FormatDesc
 {
@@ -221,7 +230,10 @@ bool DecodeDXGIFormat(DXGI_FORMAT format, DX11FormatDesc *desc)
 void BackEnd_SetShader(const ImDrawList *, const ImDrawCmd *, const Inspector *inspector)
 {
     if (GImplData.pPixelShader == NULL)
+    {
+        GiveNotInitializedWarning();
         return;
+    }
 
     const ShaderOptions *shaderOptions = &inspector->CurrentShaderOptions;
 
@@ -258,6 +270,7 @@ bool BackEnd_GetData(Inspector *inspector, ImTextureID texture, int /*x*/, int /
 {
     if (GImplData.pd3dDevice == NULL)
     {
+        GiveNotInitializedWarning();
         return false;
     }
     ID3D11Texture2D *pTexture = NULL;

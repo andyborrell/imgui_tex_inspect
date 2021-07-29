@@ -602,6 +602,16 @@ void ImplOpenGl3_Shutdown()
     readbackFramebuffer = 0;
 }
 
+void GiveNotInitializedWarning()
+{
+    static bool warningGiven = false;
+    if (!warningGiven)
+    {
+        fprintf(stderr, "ERROR: ImGuiTexInspect backend not initialized\n");
+        warningGiven = true;
+    }
+}
+
 //-------------------------------------------------------------------------
 // [SECTION] BackEnd functions declared in imgui_tex_inspect_internal.h
 //-------------------------------------------------------------------------
@@ -632,11 +642,20 @@ void BackEnd_SetShader(const ImDrawList *, const ImDrawCmd *, const Inspector *i
         glUniform2fv(g_UniformLocationGridWidth,            1, &texConversion->GridWidth.x);
         glUniform4fv(g_UniformLocationGrid,                 1, &texConversion->GridColor.x);
     }
+    else
+    {
+        GiveNotInitializedWarning();
+    }
 }
 bool BackEnd_GetData(Inspector *inspector, ImTextureID texture, int /*x*/, int /*y*/, int /*width*/, int /*height*/, BufferDesc *bufferDesc)
 {
     // Current simple implementation just gets data for whole texture
 
+    if (readbackFramebuffer == 0)
+    {
+        GiveNotInitializedWarning();
+        return false;
+    }
     const int numChannels = 4;
     glGetError(); // Discard any current error so that check at end of function is useful
     void * data;
