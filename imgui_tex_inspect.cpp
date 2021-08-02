@@ -1078,8 +1078,6 @@ void ValueText::DrawAnnotation(ImDrawList *drawList, ImVec2 texel, Transform2D t
 Arrow::Arrow(int xVectorIndex, int yVectorIndex, ImVec2 lineScale)
     : VectorIndex_x(xVectorIndex), VectorIndex_y(yVectorIndex), LineScale(lineScale)
 {
-    // Use NormalMap as a default preset
-    UsePreset(Preset::NormalMap);
 }
 
 Arrow &Arrow::UsePreset(Preset preset)

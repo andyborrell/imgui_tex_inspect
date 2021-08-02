@@ -279,7 +279,7 @@ void Demo_TextureAnnotations()
         // Draw the currently enabled annotations...
         if (annotationEnabled_arrow)
         {
-            ImGuiTexInspect::DrawAnnotations(ImGuiTexInspect::Arrow(), maxAnnotatedTexels);
+            ImGuiTexInspect::DrawAnnotations(ImGuiTexInspect::Arrow().UsePreset(ImGuiTexInspect::Arrow::NormalMap), maxAnnotatedTexels);
         }
 
         if (annotationEnabled_valueText)
