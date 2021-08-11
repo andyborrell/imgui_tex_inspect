@@ -1,9 +1,9 @@
 // ImGuiTexInspect, a texture inspector widget for dear imgui
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
 #define _CRT_SECURE_NO_WARNINGS
 #endif
-
+#include "imgui_tex_inspect_internal.h"
 #include "imgui_tex_inspect_demo.h"
 #include "imgui.h"
 #include "imgui_tex_inspect.h"
