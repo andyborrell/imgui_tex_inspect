@@ -365,7 +365,10 @@ bool BeginInspectorPanel(const char *name, ImTextureID texture, ImVec2 textureSi
 
 bool BeginInspectorPanel(const char *name, ImTextureID texture, ImVec2 textureSize, InspectorFlags flags, SizeExcludingBorder size)
 {
-    return BeginInspectorPanel(name, texture, textureSize, flags, SizeIncludingBorder{size.size + ImVec2(2, 2)});
+    // Correct the size to include the border, but preserve 0 which has a special meaning
+    return BeginInspectorPanel(name, texture, textureSize, flags,
+                               SizeIncludingBorder{ImVec2{size.size.x == 0 ? 0 : size.size.x + 2, 
+                                                          size.size.y == 0 ? 0 : size.size.y + 2}});
 }
 
 void EndInspectorPanel()
