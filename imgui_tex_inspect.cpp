@@ -235,6 +235,19 @@ bool BeginInspectorPanel(const char *title, ImTextureID texture, ImVec2 textureS
             inspector->PanPos.y = 0.5;
         }
     }
+
+    if (HasFlag(flags,InspectorFlags_FlipX))
+    {
+        ImSwap(uv0.x, uv1.x);
+        viewSizeUV.x *= -1;
+    }
+
+    if (HasFlag(flags,InspectorFlags_FlipY))
+    {
+        ImSwap(uv0.y, uv1.y);
+        viewSizeUV.y *= -1;
+    }
+
     inspector->ViewSize = viewSize;
     inspector->ViewSizeUV = viewSizeUV;
 
@@ -676,8 +689,9 @@ void RoundPanPos(Inspector *inspector)
         /* When ShowWrap mode is disabled the limits are a bit more strict. We 
          * try to keep it so that the user cannot pan past the edge of the 
          * texture at all.*/
-        inspector->PanPos = ImMax(inspector->PanPos - inspector->ViewSizeUV / 2, ImVec2(0, 0)) + inspector->ViewSizeUV / 2;
-        inspector->PanPos = ImMin(inspector->PanPos + inspector->ViewSizeUV / 2, ImVec2(1, 1)) - inspector->ViewSizeUV / 2;
+        ImVec2 absViewSizeUV = Abs(inspector->ViewSizeUV);
+        inspector->PanPos = ImMax(inspector->PanPos - absViewSizeUV / 2, ImVec2(0, 0)) + absViewSizeUV / 2;
+        inspector->PanPos = ImMin(inspector->PanPos + absViewSizeUV / 2, ImVec2(1, 1)) - absViewSizeUV / 2;
     }
 
     /* If inspector->scale is 1 then we should ensure that pixels are aligned 
@@ -877,7 +891,7 @@ bool GetAnnotationDesc(AnnotationsDesc *ad, ImU64 maxAnnotatedTexels)
          * while panning as the exact number of visible texels changes.
         */
 
-        ImVec2 screenViewSizeTexels = inspector->PixelsToTexels.Scale * inspector->ViewSize;
+        ImVec2 screenViewSizeTexels = Abs(inspector->PixelsToTexels.Scale) * inspector->ViewSize;
         ImU64 approxVisibleTexelCount = (ImU64)screenViewSizeTexels.x * (ImU64)screenViewSizeTexels.y;
         if (approxVisibleTexelCount > maxAnnotatedTexels)
         {
@@ -913,7 +927,20 @@ bool GetVisibleTexelRegionAndGetData(Inspector *inspector, ImVec2 &texelTL, ImVe
      * want to draw partially visible texels on the bottom and right edges.
      */
     texelTL = ImFloor(inspector->PixelsToTexels * inspector->ViewTopLeftPixel);
-    texelBR = ImFloor(inspector->PixelsToTexels * (inspector->ViewTopLeftPixel + inspector->ViewSize) + ImVec2(1, 1));
+    texelBR = ImFloor(inspector->PixelsToTexels * (inspector->ViewTopLeftPixel + inspector->ViewSize));
+
+    if (texelTL.x > texelBR.x)
+    {
+        ImSwap(texelTL.x, texelBR.x);
+    }
+    if (texelTL.y > texelBR.y)
+    {
+        ImSwap(texelTL.y, texelBR.y);
+    }
+
+    /* Add ImVec2(1,1) because we want to draw partially visible texels on the 
+     * bottom and right edges.*/
+    texelBR += ImVec2(1,1);
 
     texelTL = ImClamp(texelTL, ImVec2(0, 0), inspector->TextureSize);
     texelBR = ImClamp(texelBR, ImVec2(0, 0), inspector->TextureSize);
@@ -1047,7 +1074,7 @@ void ValueText::DrawAnnotation(ImDrawList *drawList, ImVec2 texel, Transform2D t
     // Calculate size of text and check if it fits
     ImVec2 textSize = ImVec2((float)TextColumnCount * fontWidth, (float)TextRowCount * fontHeight);
 
-    if (textSize.x > texelsToPixels.Scale.x || textSize.y > texelsToPixels.Scale.y)
+    if (textSize.x > ImAbs(texelsToPixels.Scale.x) || textSize.y > ImAbs(texelsToPixels.Scale.y))
     {
         // Not enough room in texel to fit the text.  Don't draw it.
         return;

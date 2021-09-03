@@ -50,6 +50,10 @@ static inline float Round(float f)
     return ImFloorSigned(f + 0.5f);
 }
 
+static inline ImVec2 Abs(ImVec2 v)
+{
+    return ImVec2(ImAbs(v.x), ImAbs(v.y));
+}
 
 //-------------------------------------------------------------------------
 // [SECTION] STRUCTURES

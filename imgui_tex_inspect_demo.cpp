@@ -59,7 +59,14 @@ void Demo_ColorFilters()
      * inspector (assuming you are already in between an ImGui::Begin and 
      * ImGui::End pair) 
      * */
-    if (ImGuiTexInspect::BeginInspectorPanel("##ColorFilters", testTex.texture, testTex.size))
+    static bool flipX = false;
+    static bool flipY = false;
+
+    ImGuiTexInspect::InspectorFlags flags = 0;
+    if (flipX) SetFlag(flags, ImGuiTexInspect::InspectorFlags_FlipX);
+    if (flipY) SetFlag(flags, ImGuiTexInspect::InspectorFlags_FlipY);
+
+    if (ImGuiTexInspect::BeginInspectorPanel("##ColorFilters", testTex.texture, testTex.size, flags))
     {
         // Draw some text showing color value of each texel (you must be zoomed in to see this)
         ImGuiTexInspect::DrawAnnotations(ImGuiTexInspect::ValueText(ImGuiTexInspect::ValueText::BytesDec));
@@ -82,6 +89,11 @@ void Demo_ColorFilters()
     ImGuiTexInspect::DrawColorChannelSelector();
     ImGui::SameLine(200);
     ImGuiTexInspect::DrawGridEditor();
+
+    ImGui::Separator();
+
+    ImGui::Checkbox("Flip X", &flipX);
+    ImGui::Checkbox("Flip Y", &flipY);
 }
 
 //-------------------------------------------------------------------------
