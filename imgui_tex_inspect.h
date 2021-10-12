@@ -90,6 +90,7 @@ void ReleaseInspectorData(ImGuiID id);
  * components (r,g,b,a) and colorMatrix is a column-major matrix.
  */
 void CurrentInspector_SetColorMatrix(const float (&colorMatrix)[16], const float (&colorOffset)[4]);
+void CurrentInspector_ResetColorMatrix();
 
 /* CurrentInspector_SetAlphaMode - see enum comments for details*/
 void CurrentInspector_SetAlphaMode(InspectorAlphaMode);  

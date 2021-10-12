@@ -442,6 +442,13 @@ void CurrentInspector_SetColorMatrix(const float (&matrix)[16], const float (&co
     memcpy(shaderOptions->ColorOffset, colorOffset, sizeof(colorOffset));
 }
 
+void CurrentInspector_ResetColorMatrix()
+{
+    Inspector *inspector = GContext->CurrentInspector;
+    ShaderOptions *shaderOptions = &inspector->CurrentShaderOptions;
+    shaderOptions->ResetColorTransform();
+}
+
 void CurrentInspector_SetAlphaMode(InspectorAlphaMode mode)
 {
     Inspector *inspector = GContext->CurrentInspector;
@@ -1145,7 +1152,7 @@ void Arrow::DrawAnnotation(ImDrawList *drawList, ImVec2 texel, Transform2D texel
     ImVec2 arrowHead1 = ImVec2(lineDir.x - lineDir.y,  lineDir.x + lineDir.y) * -arrowHeadScale;
     ImVec2 arrowHead2 = ImVec2(lineDir.x + lineDir.y, -lineDir.x + lineDir.y) * -arrowHeadScale;
 
-    DrawAnnotationLine(drawList, texel, lineEnd, texelsToPixels, lineColor);
+    DrawAnnotationLine(drawList, lineStart, lineEnd, texelsToPixels, lineColor);
     DrawAnnotationLine(drawList, lineEnd, lineEnd + arrowHead1, texelsToPixels, lineColor);
     DrawAnnotationLine(drawList, lineEnd, lineEnd + arrowHead2, texelsToPixels, lineColor);
 }
