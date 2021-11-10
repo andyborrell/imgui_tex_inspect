@@ -488,6 +488,15 @@ void CurrentInspector_SetFlags(InspectorFlags toSet, InspectorFlags toClear)
     ClearFlag(inspector->Flags, toClear);
 }
 
+void CurrentInspector_SetGridColor(ImU32 color)
+{
+    Inspector *inspector = GContext->CurrentInspector;
+    float alpha = inspector->CurrentShaderOptions.GridColor.w;
+    inspector->CurrentShaderOptions.GridColor = ImColor(color);
+    inspector->CurrentShaderOptions.GridColor.w = alpha;
+}
+
+
 void CurrentInspector_InvalidateTextureCache()
 {
     Inspector *inspector = GContext->CurrentInspector;
