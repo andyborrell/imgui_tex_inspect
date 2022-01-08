@@ -620,7 +620,7 @@ void GiveNotInitializedWarning()
 
 void BackEnd_SetShader(const ImDrawList *, const ImDrawCmd *, const Inspector *inspector)
 {
-    const ShaderOptions *texConversion = &inspector->CurrentShaderOptions;
+    const ShaderOptions *texConversion = &inspector->CachedShaderOptions;
     if (g_ShaderHandle)
     {
         ImDrawData *draw_data = ImGui::GetDrawData();

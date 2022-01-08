@@ -133,7 +133,8 @@ struct Inspector
     ImU32 MaxAnnotatedTexels = 1000;
 
     // Color transformation
-    ShaderOptions CurrentShaderOptions;
+    ShaderOptions ActiveShaderOptions;
+    ShaderOptions CachedShaderOptions;
 
     ~Inspector();
 };

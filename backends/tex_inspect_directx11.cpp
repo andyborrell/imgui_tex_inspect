@@ -235,7 +235,7 @@ void BackEnd_SetShader(const ImDrawList *, const ImDrawCmd *, const Inspector *i
         return;
     }
 
-    const ShaderOptions *shaderOptions = &inspector->CurrentShaderOptions;
+    const ShaderOptions *shaderOptions = &inspector->CachedShaderOptions;
 
     // Map the pixel shader constant buffer and fill values
     {

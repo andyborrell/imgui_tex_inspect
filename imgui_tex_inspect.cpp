@@ -270,6 +270,7 @@ bool BeginInspectorPanel(const char *title, ImTextureID texture, ImVec2 textureS
         inspector->ViewTopLeftPixel = ImGui::GetCursorScreenPos();
 
         UpdateShaderOptions(inspector);
+        inspector->CachedShaderOptions = inspector->ActiveShaderOptions;
         ImGui::Image(texture, viewSize, uv0, uv1);
         ImGui::GetWindowDrawList()->AddCallback(ImDrawCallback_ResetRenderState, nullptr);
 
@@ -437,7 +438,7 @@ ImGuiID CurrentInspector_GetID()
 void CurrentInspector_SetColorMatrix(const float (&matrix)[16], const float (&colorOffset)[4])
 {
     Inspector *inspector = GContext->CurrentInspector;
-    ShaderOptions *shaderOptions = &inspector->CurrentShaderOptions;
+    ShaderOptions *shaderOptions = &inspector->ActiveShaderOptions;
     memcpy(shaderOptions->ColorTransform, matrix, sizeof(matrix));
     memcpy(shaderOptions->ColorOffset, colorOffset, sizeof(colorOffset));
 }
@@ -445,14 +446,14 @@ void CurrentInspector_SetColorMatrix(const float (&matrix)[16], const float (&co
 void CurrentInspector_ResetColorMatrix()
 {
     Inspector *inspector = GContext->CurrentInspector;
-    ShaderOptions *shaderOptions = &inspector->CurrentShaderOptions;
+    ShaderOptions *shaderOptions = &inspector->ActiveShaderOptions;
     shaderOptions->ResetColorTransform();
 }
 
 void CurrentInspector_SetAlphaMode(InspectorAlphaMode mode)
 {
     Inspector *inspector = GContext->CurrentInspector;
-    ShaderOptions *shaderOptions = &inspector->CurrentShaderOptions;
+    ShaderOptions *shaderOptions = &inspector->ActiveShaderOptions;
 
     inspector->AlphaMode = mode;
 
@@ -491,11 +492,10 @@ void CurrentInspector_SetFlags(InspectorFlags toSet, InspectorFlags toClear)
 void CurrentInspector_SetGridColor(ImU32 color)
 {
     Inspector *inspector = GContext->CurrentInspector;
-    float alpha = inspector->CurrentShaderOptions.GridColor.w;
-    inspector->CurrentShaderOptions.GridColor = ImColor(color);
-    inspector->CurrentShaderOptions.GridColor.w = alpha;
+    float alpha = inspector->ActiveShaderOptions.GridColor.w;
+    inspector->ActiveShaderOptions.GridColor = ImColor(color);
+    inspector->ActiveShaderOptions.GridColor.w = alpha;
 }
-
 
 void CurrentInspector_InvalidateTextureCache()
 {
@@ -509,7 +509,7 @@ void CurrentInspector_SetCustomBackgroundColor(ImVec4 color)
     inspector->CustomBackgroundColor = color;
     if (inspector->AlphaMode == InspectorAlphaMode_CustomColor)
     {
-        inspector->CurrentShaderOptions.BackgroundColor = color;
+        inspector->ActiveShaderOptions.BackgroundColor = color;
     }
 }
 
@@ -524,7 +524,7 @@ void DrawColorMatrixEditor()
     const char *finalColorVectorNames[] = {"R'", "G'", "B'", "A'"};
     const float dragSpeed = 0.02f;
     Inspector *inspector = GContext->CurrentInspector;
-    ShaderOptions *shaderOptions = &inspector->CurrentShaderOptions;
+    ShaderOptions *shaderOptions = &inspector->ActiveShaderOptions;
     
     // Left hand side of equation. The final color vector which is the actual drawn color
     TextVector("FinalColorVector", finalColorVectorNames, IM_ARRAYSIZE(finalColorVectorNames));
@@ -579,7 +579,7 @@ void DrawGridEditor()
     if (gridEnabled)
     {
         ImGui::SameLine();
-        ImGui::ColorEdit3("Grid Color", (float *)&inspector->CurrentShaderOptions.GridColor, ImGuiColorEditFlags_NoInputs);
+        ImGui::ColorEdit3("Grid Color", (float *)&inspector->ActiveShaderOptions.GridColor, ImGuiColorEditFlags_NoInputs);
     }
 
     ImGui::EndGroup();
@@ -588,7 +588,7 @@ void DrawGridEditor()
 void DrawColorChannelSelector()
 {
     Inspector *inspector = GContext->CurrentInspector;
-    ShaderOptions *shaderOptions = &inspector->CurrentShaderOptions;
+    ShaderOptions *shaderOptions = &inspector->ActiveShaderOptions;
 
     ImGuiStorage *storage = ImGui::GetStateStorage();
     const ImGuiID greyScaleID = ImGui::GetID("greyScale");
@@ -740,9 +740,9 @@ void SetScale(Inspector *inspector, ImVec2 scale)
     inspector->Scale = scale;
     
     // Only force nearest sampling if zoomed in
-    inspector->CurrentShaderOptions.ForceNearestSampling =
+    inspector->ActiveShaderOptions.ForceNearestSampling =
         (inspector->Scale.x > 1.0f || inspector->Scale.y > 1.0f) && !HasFlag(inspector->Flags, InspectorFlags_NoForceFilterNearest);
-    inspector->CurrentShaderOptions.GridWidth = ImVec2(1.0f / inspector->Scale.x, 1.0f / inspector->Scale.y);
+    inspector->ActiveShaderOptions.GridWidth = ImVec2(1.0f / inspector->Scale.x, 1.0f / inspector->Scale.y);
 }
 
 void SetScale(Inspector *inspector, float scaleY)
@@ -801,16 +801,16 @@ void UpdateShaderOptions(Inspector *inspector)
     if (HasFlag(inspector->Flags, InspectorFlags_NoGrid) == false && inspector->Scale.y > inspector->MinimumGridSize)
     {
         // Enable grid in shader
-        inspector->CurrentShaderOptions.GridColor.w = 1;
+        inspector->ActiveShaderOptions.GridColor.w = 1;
         SetScale(inspector, Round(inspector->Scale.y));
     }
     else
     {
         // Disable grid in shader
-        inspector->CurrentShaderOptions.GridColor.w = 0;
+        inspector->ActiveShaderOptions.GridColor.w = 0;
     }
 
-    inspector->CurrentShaderOptions.ForceNearestSampling =
+    inspector->ActiveShaderOptions.ForceNearestSampling =
         (inspector->Scale.x > 1.0f || inspector->Scale.y > 1.0f) && !HasFlag(inspector->Flags, InspectorFlags_NoForceFilterNearest);
 }
 
