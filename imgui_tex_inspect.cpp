@@ -152,6 +152,7 @@ bool BeginInspectorPanel(const char *title, ImTextureID texture, ImVec2 textureS
     if (justCreated)
     {
         SetFlag(newlySetFlags, flags);
+        inspector->MaxAnnotatedTexels = ctx->MaxAnnotations;
     }
     SetFlag(inspector->Flags, newlySetFlags);
     ClearFlag(inspector->Flags, ctx->NextPanelOptions.ToClear);
@@ -495,6 +496,12 @@ void CurrentInspector_SetGridColor(ImU32 color)
     float alpha = inspector->ActiveShaderOptions.GridColor.w;
     inspector->ActiveShaderOptions.GridColor = ImColor(color);
     inspector->ActiveShaderOptions.GridColor.w = alpha;
+}
+
+void CurrentInspector_SetMaxAnnotations(int maxAnnotations)
+{
+    Inspector *inspector = GContext->CurrentInspector;
+    inspector->MaxAnnotatedTexels = maxAnnotations;
 }
 
 void CurrentInspector_InvalidateTextureCache()

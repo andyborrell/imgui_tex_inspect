@@ -97,6 +97,7 @@ void CurrentInspector_SetAlphaMode(InspectorAlphaMode);
 void CurrentInspector_SetFlags(InspectorFlags toSet, InspectorFlags toClear = 0);
 inline void CurrentInspector_ClearFlags(InspectorFlags toClear) {CurrentInspector_SetFlags(0, toClear);}
 void CurrentInspector_SetGridColor(ImU32 color);
+void CurrentInspector_SetMaxAnnotations(int maxAnnotations);
 
 /* CurrentInspector_InvalidateTextureCache
  * If using the InspectorFlags_NoAutoReadTexture flag then call this to 

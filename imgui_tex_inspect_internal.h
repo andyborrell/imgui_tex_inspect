@@ -130,7 +130,7 @@ struct Inspector
     float MinimumGridSize = 4; // Don't draw the grid if lines would be closer than MinimumGridSize pixels
 
     // Annotations
-    ImU32 MaxAnnotatedTexels = 1000;
+    ImU32 MaxAnnotatedTexels = 0;
 
     // Color transformation
     ShaderOptions ActiveShaderOptions;
