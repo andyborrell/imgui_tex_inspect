@@ -24,7 +24,7 @@
 // Search for "END COPIED" to find the end of the copied segment.
 // ===========================================================================
 
-// COPIED FROM imgui_impl_opengl3.cp  ////////////////////////////////////////
+// COPIED FROM imgui_impl_opengl3.cpp  ////////////////////////////////////////
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
 #define _CRT_SECURE_NO_WARNINGS
 #endif
@@ -47,38 +47,16 @@
 #else
 #include <GLES3/gl3.h>          // Use GL ES 3
 #endif
-#else
-// About Desktop OpenGL function loaders:
-//  Modern desktop OpenGL doesn't have a standard portable header file to load OpenGL function pointers.
-//  Helper libraries are often used for this purpose! Here we are supporting a few common ones (gl3w, glew, glad).
-//  You may use another loader/header of your choice (glext, glLoadGen, etc.), or chose to manually implement your own.
-#if defined(IMGUI_IMPL_OPENGL_LOADER_GL3W)
-#include <GL/gl3w.h>            // Needs to be initialized with gl3wInit() in user's code
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLEW)
-#include <GL/glew.h>            // Needs to be initialized with glewInit() in user's code.
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLAD)
-#include <glad/glad.h>          // Needs to be initialized with gladLoadGL() in user's code.
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLAD2)
-#include <glad/gl.h>            // Needs to be initialized with gladLoadGL(...) or gladLoaderLoadGL() in user's code.
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLBINDING2)
-#ifndef GLFW_INCLUDE_NONE
-#define GLFW_INCLUDE_NONE       // GLFW including OpenGL headers causes ambiguity or multiple definition errors.
-#endif
-#include <glbinding/Binding.h>  // Needs to be initialized with glbinding::Binding::initialize() in user's code.
-#include <glbinding/gl/gl.h>
-using namespace gl;
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLBINDING3)
-#ifndef GLFW_INCLUDE_NONE
-#define GLFW_INCLUDE_NONE       // GLFW including OpenGL headers causes ambiguity or multiple definition errors.
-#endif
-#include <glbinding/glbinding.h>// Needs to be initialized with glbinding::initialize() in user's code.
-#include <glbinding/gl/gl.h>
-using namespace gl;
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_EPOXY)
-#include <epoxy/gl.h>
-#else
-#include IMGUI_IMPL_OPENGL_LOADER_CUSTOM
-#endif
+#elif !defined(IMGUI_IMPL_OPENGL_LOADER_CUSTOM)
+// Modern desktop OpenGL doesn't have a standard portable header file to load OpenGL function pointers.
+// Helper libraries are often used for this purpose! Here we are using our own minimal custom loader based on gl3w.
+// In the rest of your app/engine, you can use another loader of your choice (gl3w, glew, glad, glbinding, glext, glLoadGen, etc.).
+// If you happen to be developing a new feature for this backend (imgui_impl_opengl3.cpp):
+// - You may need to regenerate imgui_impl_opengl3_loader.h to add new symbols. See https://github.com/dearimgui/gl3w_stripped
+// - You can temporarily use an unstripped version. See https://github.com/dearimgui/gl3w_stripped/releases
+// Changes to this backend using new APIs should be accompanied by a regenerated stripped loader version.
+#define IMTEXIN_GL3W_IMPL
+#include "tex_inspect_opengl_loader.h"
 #endif
 
 // Desktop GL 3.2+ has glDrawElementsBaseVertex() which GL ES and WebGL don't have.
@@ -110,6 +88,15 @@ static GLint        g_UniformLocationGridWidth = 0;
 // Functions
 static bool    ImGui_ImplOpenGL3_Init(const char* glsl_version)
 {
+    // Initialize our loader
+#if !defined(IMGUI_IMPL_OPENGL_ES2) && !defined(IMGUI_IMPL_OPENGL_ES3) && !defined(IMGUI_IMPL_OPENGL_LOADER_CUSTOM)
+    if (imtexin_gl3wInit() != 0)
+    {
+        fprintf(stderr, "Failed to initialize OpenGL loader!\n");
+        return false;
+    }
+#endif
+
     // Query for GL version (e.g. 320 for GL 3.2)
 #if !defined(IMGUI_IMPL_OPENGL_ES2)
     GLint major = 0;
@@ -147,34 +134,8 @@ static bool    ImGui_ImplOpenGL3_Init(const char* glsl_version)
     strcpy(g_GlslVersionString, glsl_version);
     strcat(g_GlslVersionString, "\n");
 
-    // Debugging construct to make it easily visible in the IDE and debugger which GL loader has been selected.
-    // The code actually never uses the 'gl_loader' variable! It is only here so you can read it!
-    // If auto-detection fails or doesn't select the same GL loader file as used by your application,
-    // you are likely to get a crash below.
-    // You can explicitly select a loader by using '#define IMGUI_IMPL_OPENGL_LOADER_XXX' in imconfig.h or compiler command-line.
-    const char* gl_loader = "Unknown";
-    IM_UNUSED(gl_loader);
-#if defined(IMGUI_IMPL_OPENGL_LOADER_GL3W)
-    gl_loader = "GL3W";
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLEW)
-    gl_loader = "GLEW";
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLAD)
-    gl_loader = "GLAD";
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLAD2)
-    gl_loader = "GLAD2";
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLBINDING2)
-    gl_loader = "glbinding2";
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLBINDING3)
-    gl_loader = "glbinding3";
-#elif defined(IMGUI_IMPL_OPENGL_LOADER_CUSTOM)
-    gl_loader = "custom";
-#else
-    gl_loader = "none";
-#endif
-
     // Make an arbitrary GL call (we don't actually need the result)
-    // IF YOU GET A CRASH HERE: it probably means that you haven't initialized the OpenGL function loader used by this code.
-    // Desktop OpenGL 3/4 need a function loader. See the IMGUI_IMPL_OPENGL_LOADER_xxx explanation above.
+    // IF YOU GET A CRASH HERE: it probably means the OpenGL function loader didn't do its job. Let us know!
     GLint current_texture;
     glGetIntegerv(GL_TEXTURE_BINDING_2D, &current_texture);
 
