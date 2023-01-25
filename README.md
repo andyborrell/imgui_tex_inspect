@@ -1,7 +1,7 @@
 ImGuiTexInspect
 =====
 
-ImGuiTexInspect is a texture inspector tool for Dear ImGui.  It's a debug tool that allows you to easily inspect the data in any texture.  It provides the following features:
+ImGuiTexInspect is a texture inspector library for Dear ImGui.  It's a debug tool that allows you to easily inspect the data in any texture.  It provides the following features:
 - Zoom and Pan
 - Hover to see exact RGBA values
 - Annotation system at high zoom which annotates texel cells with:
