@@ -14,14 +14,14 @@
 #CXX = g++
 #CXX = clang++
 
-EXE = example_sdl_opengl3
+EXE = example_sdl2_opengl3
 #TEX_INSPECT_CHANGE...
 IMGUI_DIR = ../../../imgui
 TEX_INSPECT_DIR = ../..
 #...TEX_INSPECT_CHANGE
 SOURCES = main.cpp
 SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
-SOURCES += $(IMGUI_DIR)/backends/imgui_impl_sdl.cpp $(IMGUI_DIR)/backends/imgui_impl_opengl3.cpp
+SOURCES += $(IMGUI_DIR)/backends/imgui_impl_sdl2.cpp $(IMGUI_DIR)/backends/imgui_impl_opengl3.cpp
 #TEX_INSPECT_CHANGE...
 SOURCES += $(TEX_INSPECT_DIR)/imgui_tex_inspect.cpp $(TEX_INSPECT_DIR)/imgui_tex_inspect_demo.cpp
 SOURCES += $(TEX_INSPECT_DIR)/backends/tex_inspect_opengl.cpp 
