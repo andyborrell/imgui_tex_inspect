@@ -31,13 +31,6 @@ static inline void ClearFlag(TSet &set, TFlag flag)
     set = static_cast<TSet>(set & ~flag);
 }
 
-// Proper modulus operator, as opposed to remainder as calculated by %
-template <typename T>
-static inline T Modulus(T a, T b)
-{
-    return a - b * ImFloorSigned(a / b);
-}
-
 // Defined in recent versions of imgui_internal.h.  Included here in case user is on older
 // imgui version.
 static inline float ImFloorSigned(float f)
@@ -48,6 +41,13 @@ static inline float ImFloorSigned(float f)
 static inline float Round(float f)
 {
     return ImFloorSigned(f + 0.5f);
+}
+
+// Proper modulus operator, as opposed to remainder as calculated by %
+template <typename T>
+static inline T Modulus(T a, T b)
+{
+    return a - b * ImFloorSigned(a / b);
 }
 
 static inline ImVec2 Abs(ImVec2 v)
