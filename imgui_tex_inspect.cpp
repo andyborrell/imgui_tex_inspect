@@ -434,12 +434,6 @@ void ReleaseInspectorData(ImGuiID ID)
     *inspector = Inspector();
 }
 
-Inspector *GetCurrentInspector()
-{
-    return GContext->CurrentInspector;
-}
-
-
 ImGuiID CurrentInspector_GetID()
 {
     return GContext->CurrentInspector->ID;

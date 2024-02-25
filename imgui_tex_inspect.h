@@ -2,7 +2,6 @@
 
 #pragma once
 #include "imgui.h"
-#include "imgui_tex_inspect_internal.h"
 
 namespace ImGuiTexInspect
 {
@@ -118,10 +117,6 @@ void CurrentInspector_InvalidateTextureCache();
 void CurrentInspector_SetCustomBackgroundColor(ImVec4 color);
 void CurrentInspector_SetCustomBackgroundColor(ImU32 color);
 
-/*
-Returns the current inspector referenced by global context.
-*/
-Inspector *GetCurrentInspector();
 /* CurrentInspector_GetID
  * Get the ID of the current inspector.  Currently only used for calling
  * ReleaseInspectorData. 
