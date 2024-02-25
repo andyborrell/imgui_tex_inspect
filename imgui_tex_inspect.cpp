@@ -76,6 +76,10 @@ void Shutdown()
     // Nothing to do here.  But there might be in a later version. So client code should still call it!
 }
 
+Context *GetContext() {
+    return GContext;
+}
+
 Context *CreateContext()
 {
     GContext = IM_NEW(Context);
