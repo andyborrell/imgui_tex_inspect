@@ -2,11 +2,15 @@
 
 #pragma once
 #include "imgui.h"
+#include "imgui_tex_inspect_internal.h"
 
 namespace ImGuiTexInspect
 {
+
 struct Context;
 struct Transform2D;
+
+extern Context *GContext;
 //-------------------------------------------------------------------------
 // [SECTION] INIT & SHUTDOWN
 //-------------------------------------------------------------------------
