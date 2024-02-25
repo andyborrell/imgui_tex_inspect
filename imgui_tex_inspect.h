@@ -21,6 +21,11 @@ void SetCurrentContext(Context *);
 // [SECTION] BASIC USAGE
 //-------------------------------------------------------------------------
 
+/*
+Gets the global context.
+*/
+Context *GetContext();
+
 enum InspectorAlphaMode
 {
     InspectorAlphaMode_ImGui,      // Alpha is transparency so you see the ImGui panel background behind image
@@ -112,6 +117,10 @@ void CurrentInspector_InvalidateTextureCache();
 void CurrentInspector_SetCustomBackgroundColor(ImVec4 color);
 void CurrentInspector_SetCustomBackgroundColor(ImU32 color);
 
+/*
+Returns the current inspector referenced by global context.
+*/
+Inspector *GetCurrentInspector();
 /* CurrentInspector_GetID
  * Get the ID of the current inspector.  Currently only used for calling
  * ReleaseInspectorData. 
