@@ -5,6 +5,9 @@
 
 namespace ImGuiTexInspect
 {
+    struct Transform2D;
+    struct Context;
+    struct Inspector;
 //-------------------------------------------------------------------------
 // [SECTION] INIT & SHUTDOWN
 //-------------------------------------------------------------------------
