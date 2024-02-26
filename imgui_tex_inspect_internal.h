@@ -147,11 +147,6 @@ struct InputMap
     InputMap();
 };
 
-InputMap::InputMap()
-{
-    PanButton = ImGuiMouseButton_Left;
-}
-
 // Settings configured via SetNextPanelOptions etc.
 struct NextPanelSettings
 {

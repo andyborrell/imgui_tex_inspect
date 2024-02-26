@@ -27,6 +27,10 @@ bool GetVisibleTexelRegionAndGetData(Inspector *inspector, ImVec2 &texelTL, ImVe
 //-------------------------------------------------------------------------
 // [SECTION] GLOBAL STATE
 //-------------------------------------------------------------------------
+InputMap::InputMap()
+{
+    PanButton = ImGuiMouseButton_Left;
+}
 
 Context *GContext = nullptr;
 
