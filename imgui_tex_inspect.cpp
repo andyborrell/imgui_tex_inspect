@@ -27,38 +27,10 @@ bool GetVisibleTexelRegionAndGetData(Inspector *inspector, ImVec2 &texelTL, ImVe
 //-------------------------------------------------------------------------
 // [SECTION] GLOBAL STATE
 //-------------------------------------------------------------------------
-
-// Input mapping structure, default values listed in the comments.
-struct InputMap
-{
-    ImGuiMouseButton PanButton; // LMB      enables panning when held
-    InputMap();
-};
-
 InputMap::InputMap()
 {
     PanButton = ImGuiMouseButton_Left;
 }
-
-// Settings configured via SetNextPanelOptions etc.
-struct NextPanelSettings
-{
-    InspectorFlags ToSet = 0;
-    InspectorFlags ToClear = 0;
-};
-
-// Main context / configuration structure for imgui_tex_inspect
-struct Context
-{
-    InputMap                                    Input;                           // Input mapping config
-    ImGuiStorage                                Inspectors;                      // All the inspectors we've seen
-    Inspector *                                 CurrentInspector;                // Inspector currently being processed
-    NextPanelSettings                           NextPanelOptions;                // Options configured for next inspector panel
-    float                                       ZoomRate                 = 1.3f; // How fast mouse wheel affects zoom
-    float                                       DefaultPanelHeight       = 600;  // Height of panel in pixels
-    float                                       DefaultInitialPanelWidth = 600;  // Only applies when window first appears
-    int                                         MaxAnnotations           = 1000; // Limit number of texel annotations for performance
-};
 
 Context *GContext = nullptr;
 
@@ -74,6 +46,10 @@ void Init()
 void Shutdown()
 {
     // Nothing to do here.  But there might be in a later version. So client code should still call it!
+}
+
+Context *GetContext() {
+    return GContext;
 }
 
 Context *CreateContext()
@@ -429,7 +405,6 @@ void ReleaseInspectorData(ImGuiID ID)
      */
     *inspector = Inspector();
 }
-
 
 ImGuiID CurrentInspector_GetID()
 {

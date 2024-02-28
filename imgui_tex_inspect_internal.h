@@ -31,13 +31,6 @@ static inline void ClearFlag(TSet &set, TFlag flag)
     set = static_cast<TSet>(set & ~flag);
 }
 
-// Proper modulus operator, as opposed to remainder as calculated by %
-template <typename T>
-static inline T Modulus(T a, T b)
-{
-    return a - b * ImFloorSigned(a / b);
-}
-
 // Defined in recent versions of imgui_internal.h.  Included here in case user is on older
 // imgui version.
 static inline float ImFloorSigned(float f)
@@ -48,6 +41,13 @@ static inline float ImFloorSigned(float f)
 static inline float Round(float f)
 {
     return ImFloorSigned(f + 0.5f);
+}
+
+// Proper modulus operator, as opposed to remainder as calculated by %
+template <typename T>
+static inline T Modulus(T a, T b)
+{
+    return a - b * ImFloorSigned(a / b);
 }
 
 static inline ImVec2 Abs(ImVec2 v)
@@ -137,6 +137,34 @@ struct Inspector
     ShaderOptions CachedShaderOptions;
 
     ~Inspector();
+};
+
+
+// Input mapping structure, default values listed in the comments.
+struct InputMap
+{
+    ImGuiMouseButton PanButton; // LMB      enables panning when held
+    InputMap();
+};
+
+// Settings configured via SetNextPanelOptions etc.
+struct NextPanelSettings
+{
+    InspectorFlags ToSet = 0;
+    InspectorFlags ToClear = 0;
+};
+
+// Main context / configuration structure for imgui_tex_inspect
+struct Context
+{
+    InputMap                                    Input;                           // Input mapping config
+    ImGuiStorage                                Inspectors;                      // All the inspectors we've seen
+    Inspector *                                 CurrentInspector;                // Inspector currently being processed
+    NextPanelSettings                           NextPanelOptions;                // Options configured for next inspector panel
+    float                                       ZoomRate                 = 1.3f; // How fast mouse wheel affects zoom
+    float                                       DefaultPanelHeight       = 600;  // Height of panel in pixels
+    float                                       DefaultInitialPanelWidth = 600;  // Only applies when window first appears
+    int                                         MaxAnnotations           = 1000; // Limit number of texel annotations for performance
 };
 
 //-------------------------------------------------------------------------

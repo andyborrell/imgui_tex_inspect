@@ -5,14 +5,16 @@
 
 namespace ImGuiTexInspect
 {
-struct Context;
-struct Transform2D;
+    struct Transform2D;
+    struct Context;
+    struct Inspector;
 //-------------------------------------------------------------------------
 // [SECTION] INIT & SHUTDOWN
 //-------------------------------------------------------------------------
 void Init();
 void Shutdown();
 
+Context *GetContext();
 Context *CreateContext();
 void DestroyContext(Context *);
 void SetCurrentContext(Context *);
@@ -20,6 +22,11 @@ void SetCurrentContext(Context *);
 //-------------------------------------------------------------------------
 // [SECTION] BASIC USAGE
 //-------------------------------------------------------------------------
+
+/*
+Gets the global context.
+*/
+Context *GetContext();
 
 enum InspectorAlphaMode
 {
